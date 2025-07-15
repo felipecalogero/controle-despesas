@@ -16,12 +16,11 @@ Este é um projeto de controle de despesas pessoais desenvolvido em **Laravel** 
 ## 🚀 Instalação
 
 ```
-git clone https://github.com/seu-usuario/controle-despesas.git
+git clone https://github.com/felipecalogero/controle-despesas.git
 cd controle-despesas
 
 composer install
 cp .env.example .env
-php artisan key:generate
 
 php artisan migrate
 php artisan serve
