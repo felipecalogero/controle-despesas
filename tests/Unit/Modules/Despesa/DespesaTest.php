@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Modules\Despesa;
 
+use App\Models\Despesa;
 use Core\Modules\Despesas\Application\UseCases\AtualizarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\CriarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\DeletarDespesaUseCase;
@@ -10,6 +11,7 @@ use Core\Modules\Despesas\Application\UseCases\Inputs\AtualizarDespesaInput;
 use Core\Modules\Despesas\Application\UseCases\Inputs\CriarDespesaInput;
 use Core\Modules\Despesas\Application\UseCases\ListarDespesasUseCase;
 use Core\Modules\Despesas\Domain\Entities\DespesaEntity;
+use Core\Modules\Despesas\Domain\Exceptions\DespesaInvalidaException;
 use Core\Modules\Despesas\Domain\Exceptions\DespesaNaoPodeSerFuturaException;
 use Core\Modules\Despesas\Domain\Gateways\DespesaGateway;
 use Core\Modules\Despesas\Domain\Rulesets\DespesaRuleSet;
@@ -58,6 +60,17 @@ class DespesaTest extends TestCase
         $useCase = new CriarDespesaUseCase($gateway, $ruleset);
 
         $useCase->execute($input);
+    }
+
+    public function testBuscarDespesaInexistente()
+    {
+        $this->expectException(DespesaInvalidaException::class);
+
+        $buscarDespesa = Despesa::query()->findOrFail(99);;
+
+        $buscarDespesa->method('apply')->willThrowException(
+            new DespesaNaoPodeSerFuturaException()
+        );
     }
 
     public function testAtualizarDespesaComSucesso()

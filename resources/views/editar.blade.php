@@ -148,11 +148,11 @@
                     <div class="text-sm text-amber-800 space-y-1">
                         <p><strong>ID:</strong> #{{ $output->id }}</p>
                         <p><strong>Criada
-                                em: </strong>{{ $output->created_at ? $output->created_at->format('d/m/Y H:i') : 'Não disponível' }}
+                                em: </strong>{{ $output->createdAt ? $output->createdAt->format('d/m/Y H:i') : 'Não disponível' }}
                         </p>
-                        @if($output->updated_at != $output->created_at)
+                        @if($output->updatedAt != $output->createdAt)
                             <p><strong>Última
-                                    atualização:</strong> {{ $output->updated_at ? $output->updated_at->format('d/m/Y H:i') : 'Não disponível'}}
+                                    atualização:</strong> {{ $output->updatedAt ? $output->updatedAt->format('d/m/Y H:i') : 'Não disponível'}}
                             </p>
                         @endif
                     </div>

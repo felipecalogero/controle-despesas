@@ -40,19 +40,19 @@ class QueryDespesaRepository implements DespesaGateway
 
     public function atualizar(DespesaEntity $despesa): DespesaEntity
     {
-        $model = Despesa::query()->findOrFail($despesa->id);
+        $despesaModel = Despesa::query()->findOrFail($despesa->id);
 
-        $model->descricao = $despesa->descricao;
-        $model->valor = $despesa->valor;
-        $model->data = $despesa->data->format('Y-m-d');
+        $despesaModel->descricao = $despesa->descricao;
+        $despesaModel->valor = $despesa->valor;
+        $despesaModel->data = $despesa->data->format('Y-m-d');
 
-        $model->save();
+        $despesaModel->save();
 
         return new DespesaEntity(
-            $model->id,
-            $model->descricao,
-            $model->valor,
-            new \DateTime($model->data)
+            $despesaModel->id,
+            $despesaModel->descricao,
+            $despesaModel->valor,
+            new \DateTime($despesaModel->data)
         );
     }
 
