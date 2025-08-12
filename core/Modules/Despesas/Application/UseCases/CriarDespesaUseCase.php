@@ -10,7 +10,6 @@ use Core\Modules\Despesas\Domain\Rulesets\DespesaRuleSet;
 
 class CriarDespesaUseCase
 {
-
     public function __construct(
         private DespesaGateway $despesaInterface,
         private DespesaRuleSet $despesaRuleSet
@@ -26,14 +25,14 @@ class CriarDespesaUseCase
         );
 
         $this->despesaRuleSet->apply($despesa);
-        $this->despesaInterface->salvar($despesa);
+        $despesaSalva = $this->despesaInterface->salvar($despesa);
 
         return new CriarDespesaOutput(
-            $despesa->id,
+            $despesaSalva->id,
             [
-                'descricao' => $despesa->descricao,
-                'valor' => $despesa->valor,
-                'data' => $despesa->data->format('Y-m-d'),
+                'descricao' => $despesaSalva->descricao,
+                'valor' => $despesaSalva->valor,
+                'data' => $despesaSalva->data->format('Y-m-d'),
             ],
             'Despesa criada com sucesso.'
         );
