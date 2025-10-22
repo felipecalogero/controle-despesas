@@ -14,7 +14,7 @@ class UsuarioJaExisteRule
 
     public function validar(string $email): void
     {
-        $usuario = $this->cadastroGateway->buscarUsuario($email);
+        $usuario = $this->cadastroGateway->getUser($email);
 
         if ($usuario) {
             throw new UsuarioJaExisteException();

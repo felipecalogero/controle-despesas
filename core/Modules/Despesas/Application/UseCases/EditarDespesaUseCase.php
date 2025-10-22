@@ -9,12 +9,11 @@ use Core\Modules\Despesas\Domain\Gateways\DespesaGateway;
 class EditarDespesaUseCase
 {
     public function __construct(private DespesaGateway $despesaInterface)
-    {
-    }
+    {}
 
     public function execute(int $id): EditarDespesaOutput
     {
-        $despesa = $this->despesaInterface->buscar($id);
+        $despesa = $this->despesaInterface->getById($id);
 
         return new EditarDespesaOutput(
             $despesa->id,

@@ -10,19 +10,30 @@ use Core\Modules\Usuario\Cadastro\Application\UseCases\CriarUsuarioUseCase;
 use Core\Modules\Usuario\Cadastro\Application\UseCases\Inputs\CriarUsuarioInput;
 use Core\Modules\Usuario\Login\Application\UseCases\AutenticarUsuarioUseCase;
 use Core\Modules\Usuario\Login\Application\UseCases\Inputs\AutenticarUsuarioInput;
+use Core\Modules\Usuario\Social\Application\UseCases\FacebookUseCase;
+use Core\Modules\Usuario\Social\Domain\Gateways\SocialGateway;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 /**
  *
  */
 class LoginController
 {
+    public function __construct(
+        private AutenticarUsuarioUseCase $autenticarUsuarioUseCase,
+        private FacebookUseCase $facebookUseCase,
+        private CriarUsuarioUseCase $criarUsuarioUseCase,
+    ){}
+
     /**
      * @return Factory|View|Application|\Illuminate\View\View|object
      */
@@ -65,8 +76,7 @@ class LoginController
                 $dados['password']
             );
 
-            $autenticar = app(AutenticarUsuarioUseCase::class);
-            $output = $autenticar->execute($input);
+            $output = $this->autenticarUsuarioUseCase->execute($input);
 
             $user = User::find($output->id);
             Auth::login($user);
@@ -91,8 +101,7 @@ class LoginController
                 $dados['email'],
                 $dados['password']
             );
-            $cadastrar = app(CriarUsuarioUseCase::class);
-            $output = $cadastrar->execute($input);
+            $output = $this->criarUsuarioUseCase->execute($input);
 
             $user = User::find($output->id);
             Auth::login($user);
@@ -106,5 +115,16 @@ class LoginController
                 ->withInput()
                 ->withErrors(['login' => $e->getMessage()]);
         }
+    }
+
+    public function loginWithFacebook() {
+        $facebookUser = $this->facebookUseCase->socialGateway->getFacebookUser();
+        $output = $this->facebookUseCase->execute($facebookUser);
+
+        Auth::loginUsingId($output->id);
+
+        return redirect()
+            ->route('despesas.index')
+            ->with('success', $output->message);
     }
 }

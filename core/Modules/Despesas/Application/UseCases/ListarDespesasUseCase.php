@@ -11,17 +11,12 @@ class ListarDespesasUseCase
 
     public function execute(): ListarDespesasOutput
     {
-        $despesas  = $this->despesaInterface->listar();
-        $total = $this->calcularValorTotal($despesas);
+        $despesas  = $this->despesaInterface->list();
+        $total = $this->despesaInterface->getTotal($despesas);
 
         return new ListarDespesasOutput(
             $despesas,
             $total
         );
-    }
-
-    public function calcularValorTotal($despesas): float
-    {
-        return array_reduce($despesas, fn($acc, $d) => $acc + $d->valor, 0);
     }
 }

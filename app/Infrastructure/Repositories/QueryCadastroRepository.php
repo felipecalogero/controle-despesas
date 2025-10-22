@@ -9,13 +9,13 @@ use Core\Modules\Usuario\Login\Domain\Exceptions\UsuarioNaoEncontradoException;
 
 class QueryCadastroRepository implements CadastroGateway
 {
-    public function salvar(UsuarioEntity $user): UsuarioEntity
+    public function saveUser(string $name, string $lastName, string $email, string $password): UsuarioEntity
     {
         $userModel = new User();
-        $userModel->name = $user->name;
-        $userModel->last_name = $user->lastName;
-        $userModel->email = $user->email;
-        $userModel->password = $user->password;
+        $userModel->name = $name;
+        $userModel->last_name = $lastName;
+        $userModel->email = $email;
+        $userModel->password = $password;
         $userModel->save();
 
         return new UsuarioEntity(
@@ -27,7 +27,7 @@ class QueryCadastroRepository implements CadastroGateway
         );
     }
 
-    public function excluir(int $id): bool
+    public function deleteUser(int $id): bool
     {
         $user = User::query()->findOrFail($id);
 
@@ -39,12 +39,12 @@ class QueryCadastroRepository implements CadastroGateway
         return true;
     }
 
-    public function atualizar(UsuarioEntity $user): UsuarioEntity
+    public function updateUser(UsuarioEntity $user): UsuarioEntity
     {
         // TODO: Implement atualizar() method.
     }
 
-    public function buscarUsuario(string $email): ?UsuarioEntity
+    public function getUser(string $email): ?UsuarioEntity
     {
         $user = User::where('email', $email)->first();
 

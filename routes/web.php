@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RelatorioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DespesaController;
 use App\Http\Controllers\LoginController;
@@ -11,7 +12,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/despesas/{id}/editar', [DespesaController::class, 'edit'])->name('despesas.edit');
     Route::put('/despesas/{id}', [DespesaController::class, 'update'])->name('despesas.update');
     Route::delete('/despesas/{id}', [DespesaController::class, 'destroy'])->name('despesas.destroy');
+
+    Route::post('/despesas/filtradas', [DespesaController::class, 'filtrarDespesas'])->name('despesas.filtrar');
 });
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+//Route::middleware(['guest'])->group(function () {
+    Route::get('/', function () {});
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+//});
 Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+//Login oauth2
+
+Route::get('/auth/facebook/redirect', function () {
+    return Socialite::driver('facebook')->redirect();
+})->name('facebook.redirect');
+Route::get('/auth/facebook/callback', [LoginController::class, 'loginWithFacebook'])->name('login.facebook');
+

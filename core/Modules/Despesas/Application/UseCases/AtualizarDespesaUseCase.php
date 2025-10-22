@@ -17,15 +17,18 @@ class AtualizarDespesaUseCase
 
     public function execute(AtualizarDespesaInput $input): AtualizarDespesaOutput
     {
+        $user = auth()->user()->id;
+
         $despesa = new DespesaEntity(
             $input->id,
             $input->descricao,
             $input->valor,
-            $input->data
+            $input->data,
+            $user
         );
 
         $this->despesaRuleSet->apply($despesa);
-        $this->despesaInterface->atualizar($despesa);
+        $this->despesaInterface->update($despesa);
 
         return new AtualizarDespesaOutput(
             $despesa->id,

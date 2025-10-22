@@ -26,7 +26,7 @@ class CriarUsuarioUseCase
             $input->password
         );
 
-        $usuarioSalvo = $this->cadastroInterface->salvar($usuario);
+        $usuarioSalvo = $this->cadastroInterface->saveUser($usuario);
 
         return new CriarUsuarioOutput(
             $usuarioSalvo->id,

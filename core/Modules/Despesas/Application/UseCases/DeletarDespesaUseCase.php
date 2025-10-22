@@ -11,7 +11,7 @@ class DeletarDespesaUseCase
 
     public function execute(int $id): DeletarDespesaOutput
     {
-        $sucesso = $this->despesaInterface->excluir($id);
+        $sucesso = $this->despesaInterface->delete($id);
 
         return new DeletarDespesaOutput(
             $sucesso,

@@ -8,6 +8,7 @@ class DespesaEntity
     public string $descricao;
     public float $valor;
     public \DateTime $data;
+    public int $usuarioId;
     public ?\DateTime $createdAt = null;
     public ?\DateTime $updatedAt = null;
 
@@ -25,19 +26,21 @@ class DespesaEntity
         string $descricao,
         float $valor,
         \DateTime $data,
+        int $usuarioId,
         ?\DateTime $createdAt = null,
-        ?\DateTime $updatedAt = null
+        ?\DateTime $updatedAt = null,
     )
     {
         $this->id = $id;
         $this->descricao = $descricao;
         $this->valor = $valor;
         $this->data = $data;
+        $this->usuarioId = $usuarioId;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -95,6 +98,16 @@ class DespesaEntity
     public function setCreatedAt(?\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    public function getUsuarioId(): int
+    {
+        return $this->usuarioId;
+    }
+
+    public function setUsuarioId(int $usuarioId): void
+    {
+        $this->usuarioId = $usuarioId;
     }
 
     public function getUpdatedAt(): ?\DateTime

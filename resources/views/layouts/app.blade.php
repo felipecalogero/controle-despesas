@@ -83,11 +83,11 @@
                     <span class="font-medium">Nova Despesa</span>
                 </a>
 
-                <a href="#"
-                   class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 group">
-                    <i data-lucide="bar-chart-3" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                    <span class="font-medium">Relatórios</span>
-                </a>
+{{--                <a href="{{ route('despesas.filtrar') }}"--}}
+{{--                   class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 group">--}}
+{{--                    <i data-lucide="bar-chart-3" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>--}}
+{{--                    <span class="font-medium">Relatórios</span>--}}
+{{--                </a>--}}
 
                 <a href="#"
                    class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 group">

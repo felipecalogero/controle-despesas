@@ -6,8 +6,8 @@ use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 
 interface CadastroGateway
 {
-    public function salvar(UsuarioEntity $user): UsuarioEntity;
-    public function excluir(int $id): bool;
-    public function atualizar(UsuarioEntity $user): UsuarioEntity;
-    public function buscarUsuario(string $email): ?UsuarioEntity;
+    public function saveUser(string $name, string $lastName, string $email, string $password): UsuarioEntity;
+    public function deleteUser(int $id): bool;
+    public function updateUser(UsuarioEntity $user): UsuarioEntity;
+    public function getUser(string $email): ?UsuarioEntity;
 }

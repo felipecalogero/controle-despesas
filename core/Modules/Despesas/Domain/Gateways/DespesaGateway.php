@@ -2,13 +2,17 @@
 
 namespace Core\Modules\Despesas\Domain\Gateways;
 
+use App\Http\Requests\FiltrarDespesasRequest;
+use Core\Modules\Despesas\Application\UseCases\Inputs\FiltrarDespesasInput;
 use Core\Modules\Despesas\Domain\Entities\DespesaEntity;
 
 interface DespesaGateway
 {
-    public function salvar(DespesaEntity $despesa): DespesaEntity;
-    public function excluir(int $id): bool;
-    public function atualizar(DespesaEntity $despesa): DespesaEntity;
-    public function listar(): array;
-    public function buscar(int $id): ?DespesaEntity;
+    public function save(DespesaEntity $despesa): DespesaEntity;
+    public function delete(int $id): bool;
+    public function update(DespesaEntity $despesa): DespesaEntity;
+    public function list(): array;
+    public function getById(int $id): ?DespesaEntity;
+    public function filterDespesas(FiltrarDespesasInput $despesasInput): array;
+    public function getTotal(array $despesas);
 }

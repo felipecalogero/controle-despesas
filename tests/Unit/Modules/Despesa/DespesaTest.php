@@ -120,7 +120,7 @@ class DespesaTest extends TestCase
         );
 
         $gateway = $this->createMock(DespesaGateway::class);
-        $gateway->method('buscar')->with(1)->willReturn($despesa);
+        $gateway->method('buscarId')->with(1)->willReturn($despesa);
 
         $useCase = new EditarDespesaUseCase($gateway);
 

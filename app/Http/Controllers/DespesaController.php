@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DespesaRequest;
+use App\Http\Requests\FiltrarDespesasRequest;
 use Core\Modules\Despesas\Application\UseCases\AtualizarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\CriarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\DeletarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\EditarDespesaUseCase;
+use Core\Modules\Despesas\Application\UseCases\FiltrarDespesasUseCase;
 use Core\Modules\Despesas\Application\UseCases\Inputs\AtualizarDespesaInput;
 use Core\Modules\Despesas\Application\UseCases\Inputs\CriarDespesaInput;
+use Core\Modules\Despesas\Application\UseCases\Inputs\FiltrarDespesasInput;
 use Core\Modules\Despesas\Application\UseCases\ListarDespesasUseCase;
 use Illuminate\Routing\Controller;
 
 class DespesaController extends Controller
 {
-    public function index(ListarDespesasUseCase $listar)
+    public function __construct(
+        private ListarDespesasUseCase $listarDespesas,
+        private FiltrarDespesasUseCase $filtrarDespesas
+    ) {}
+    public function index()
     {
-        $output = $listar->execute();
+        $output = $this->listarDespesas->execute();
 
         return view('index', [
             'despesas' => $output->despesas,
@@ -79,4 +86,24 @@ class DespesaController extends Controller
             ->route('despesas.index')
             ->with('sucesso', $output->mensagem);
     }
+
+    public function filtrarDespesas(FiltrarDespesasRequest $request) {
+        $dados = $request->validated();
+
+        $input = New FiltrarDespesasInput(
+            $dados['descricao'] ?? null,
+            $dados['mes'] ?? null,
+            $dados['data_inicial'] ?? null,
+            $dados['data_final'] ?? null
+        );
+
+        $output = $this->filtrarDespesas->execute($input);
+
+        return view('index', [
+            'despesas' => $output->despesas,
+            'total' => $output->total,
+            'filtros' => $dados
+        ]);
+    }
+
 }

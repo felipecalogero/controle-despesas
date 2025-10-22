@@ -17,15 +17,18 @@ class CriarDespesaUseCase
 
     public function execute(CriarDespesaInput $input): CriarDespesaOutput
     {
+        $usuarioId = auth()->user()->id;
+
         $despesa = new DespesaEntity(
             null,
             $input->descricao,
             $input->valor,
-            $input->data
+            $input->data,
+            $usuarioId
         );
 
         $this->despesaRuleSet->apply($despesa);
-        $despesaSalva = $this->despesaInterface->salvar($despesa);
+        $despesaSalva = $this->despesaInterface->save($despesa);
 
         return new CriarDespesaOutput(
             $despesaSalva->id,

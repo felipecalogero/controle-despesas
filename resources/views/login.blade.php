@@ -143,6 +143,7 @@
 
             <!-- Login Social -->
             <div class="mt-6 space-y-3">
+                <a href="{{ route('facebook.redirect') }}">
                 <button class="w-full py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 hover-scale">
                     <div class="flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -154,6 +155,16 @@
                         <span class="text-gray-700 font-medium">Continuar com Google</span>
                     </div>
                 </button>
+                </a>
+
+                <a href="{{ route('facebook.redirect') }}">
+                    <button class="mt-3 w-full py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 hover-scale">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                            <span class="text-gray-700 font-medium">Continuar com Facebook</span>
+                        </div>
+                    </button>
+                </a>
 
                 <button class="w-full py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 hover-scale">
                     <div class="flex items-center justify-center space-x-2">
