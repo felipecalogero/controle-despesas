@@ -109,7 +109,7 @@ class QueryDespesaRepository implements DespesaGateway
     {
         $usuarioId = auth()->user()->id;
 
-        $query = Despesa::query()->where('user_id', $usuarioId); // ← Adiciona aqui
+        $query = Despesa::query()->where('user_id', $usuarioId);
 
         if(!empty($despesasInput->descricao)){
             $query->where('descricao', 'like', '%'.$despesasInput->descricao.'%');

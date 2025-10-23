@@ -21,6 +21,7 @@ class DespesaController extends Controller
         private ListarDespesasUseCase $listarDespesas,
         private FiltrarDespesasUseCase $filtrarDespesas
     ) {}
+
     public function index()
     {
         $output = $this->listarDespesas->execute();
@@ -57,7 +58,7 @@ class DespesaController extends Controller
     public function edit(int $id, EditarDespesaUseCase $buscar)
     {
         $output = $buscar->execute($id);
-        return view('editar', compact('output'));
+        return view('index', compact('output'));
     }
 
     public function update(int $id, AtualizarDespesaUseCase $atualizar, DespesaRequest $request)
