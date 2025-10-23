@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use Core\Modules\Despesas\Application\UseCases\BuscarDespesasMesUseCase;
+use Core\Modules\Despesas\Domain\Gateways\DespesaGateway;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class ConfiguracoesController extends Controller
 {
+    public function __construct(
+        private BuscarDespesasMesUseCase $buscarDespesasMensalUseCase,
+    ) {}
     public function index()
     {
-        $user = Auth::user();
-        // Calcule o total do mês atual para o resumo
-        $totalMes = 0; // Sua lógica para calcular gastos do mês
+        $usuario = Auth::user();
+        $despesasMes = $this->buscarDespesasMensalUseCase->execute();
+        $totalMes = $despesasMes->total;
 
-        return view('configuracoes', compact('user', 'totalMes'));
+        return view('configuracoes', compact('usuario', 'totalMes'));
     }
 
     public function atualizarPerfil(Request $request)

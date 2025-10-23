@@ -65,7 +65,6 @@ class QueryDespesaRepository implements DespesaGateway
         );
     }
 
-
     public function list(): array
     {
         $usuarioId = auth()->user()->id;
@@ -143,5 +142,27 @@ class QueryDespesaRepository implements DespesaGateway
     public function getTotal($despesas): float
     {
         return array_reduce($despesas, fn($acc, $d) => $acc + $d->valor, 0);
+    }
+
+    public function getDespesasMonth(): array
+    {
+        $mesAtual = now()->format('m');
+        $usuarioId = auth()->user()->id;
+
+        return Despesa::query()
+            ->orderBy('data')
+            ->where('user_id', $usuarioId)
+            ->whereMonth('data', $mesAtual)
+            ->get()
+            ->map(function ($despesaModel) {
+                return new DespesaEntity(
+                    id: $despesaModel->id,
+                    descricao: $despesaModel->descricao,
+                    valor: $despesaModel->valor,
+                    data: new \DateTime($despesaModel->data),
+                    usuarioId: $despesaModel->user_id
+                );
+            })
+            ->toArray();
     }
 }

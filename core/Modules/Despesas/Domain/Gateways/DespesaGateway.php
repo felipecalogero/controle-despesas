@@ -2,7 +2,6 @@
 
 namespace Core\Modules\Despesas\Domain\Gateways;
 
-use App\Http\Requests\FiltrarDespesasRequest;
 use Core\Modules\Despesas\Application\UseCases\Inputs\FiltrarDespesasInput;
 use Core\Modules\Despesas\Domain\Entities\DespesaEntity;
 
@@ -15,4 +14,5 @@ interface DespesaGateway
     public function getById(int $id): ?DespesaEntity;
     public function filterDespesas(FiltrarDespesasInput $despesasInput): array;
     public function getTotal(array $despesas);
+    public function getDespesasMonth(): array;
 }
