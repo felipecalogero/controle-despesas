@@ -12,7 +12,7 @@ interface DespesaGateway
     public function update(DespesaEntity $despesa): DespesaEntity;
     public function list(): array;
     public function getById(int $id): ?DespesaEntity;
-    public function filterDespesas(FiltrarDespesasInput $despesasInput): array;
+    public function filterDespesas(array $filtros): array;
     public function getTotal(array $despesas);
     public function getDespesasMonth(): array;
 }

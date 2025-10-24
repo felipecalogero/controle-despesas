@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/financeiro', [ConfiguracoesController::class, 'atualizarFinanceiro'])->name(
             'configuracoes.atualizar-financeiro'
         );
+
         Route::post('/senha', [ConfiguracoesController::class, 'alterarSenha'])->name('configuracoes.alterar-senha');
     });
 });

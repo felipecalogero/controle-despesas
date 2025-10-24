@@ -139,7 +139,7 @@ class ExpenseManager {
             event.stopPropagation();
             event.preventDefault();
         }
-        window.location.href = window.location.pathname;
+        window.location.href = '/despesas';
     }
 
     // ==================== MODAL NOVA DESPESA ====================
@@ -364,6 +364,205 @@ class ExpenseManager {
         return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
     }
 }
+
+// ==================== VALIDACAO DE SENHA ====================
+
+/**
+ * Toggle para mostrar/esconder senha
+ */
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.setAttribute('data-lucide', 'eye-off');
+    } else {
+        input.type = 'password';
+        icon.setAttribute('data-lucide', 'eye');
+    }
+    lucide.createIcons();
+}
+
+/**
+ * Verifica a força da senha
+ */
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let feedback = '';
+
+    // Verificar comprimento
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    // Determinar força e feedback
+    if (password.length === 0) {
+        feedback = 'Digite uma senha';
+    } else if (password.length < 8) {
+        feedback = 'Muito curta';
+    } else if (strength <= 2) {
+        feedback = 'Fraca';
+    } else if (strength <= 3) {
+        feedback = 'Média';
+    } else {
+        feedback = 'Forte';
+    }
+
+    return { strength, feedback };
+}
+
+/**
+ * Atualiza a barra de força da senha
+ */
+/**
+ * Atualiza a barra de força da senha
+ */
+function updatePasswordStrength(password) {
+    const strengthBar = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('passwordStrengthText');
+
+    if (!strengthBar || !strengthText) return;
+
+    let strength = 0;
+    let feedback = 'Digite uma senha';
+    let width = '0%';
+    let color = 'bg-gray-300';
+    let textColor = 'text-gray-500';
+
+    // Critérios de força
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    // Definir força baseada na pontuação
+    if (password.length === 0) {
+        feedback = 'Digite uma senha';
+        width = '0%';
+        color = 'bg-gray-300';
+        textColor = 'text-gray-500';
+    } else if (password.length < 8) {
+        feedback = 'Muito curta';
+        width = '20%';
+        color = 'bg-red-500';
+        textColor = 'text-red-500';
+    } else if (strength <= 2) {
+        feedback = 'Fraca';
+        width = '40%';
+        color = 'bg-orange-500';
+        textColor = 'text-orange-500';
+    } else if (strength <= 3) {
+        feedback = 'Média';
+        width = '60%';
+        color = 'bg-yellow-500';
+        textColor = 'text-yellow-500';
+    } else if (strength <= 4) {
+        feedback = 'Forte';
+        width = '80%';
+        color = 'bg-blue-500';
+        textColor = 'text-blue-500';
+    } else {
+        feedback = 'Muito Forte';
+        width = '100%';
+        color = 'bg-green-500';
+        textColor = 'text-green-500';
+    }
+
+    // Aplicar estilos
+    strengthBar.className = `h-1 rounded-full transition-all duration-300 ${color}`;
+    strengthBar.style.width = width;
+    strengthText.textContent = feedback;
+    strengthText.className = `text-xs ${textColor}`;
+}
+
+/**
+ * Verifica se as senhas coincidem
+ */
+function checkPasswordMatch() {
+    const novaSenha = document.getElementById('nova_senha');
+    const confirmarSenha = document.getElementById('confirmar_senha');
+    const matchMessage = document.getElementById('passwordMatchMessage');
+
+    if (!novaSenha || !confirmarSenha || !matchMessage) return;
+
+    if (confirmarSenha.value.length === 0) {
+        matchMessage.className = 'hidden';
+        confirmarSenha.classList.remove('border-red-500', 'border-green-500');
+    } else if (novaSenha.value === confirmarSenha.value) {
+        matchMessage.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-green-500 mr-1"></i> Senhas coincidem';
+        matchMessage.className = 'text-sm text-green-600 mt-1 flex items-center space-x-1';
+        confirmarSenha.classList.remove('border-red-500');
+        confirmarSenha.classList.add('border-green-500');
+    } else {
+        matchMessage.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4 text-red-500 mr-1"></i> Senhas não coincidem';
+        matchMessage.className = 'text-sm text-red-600 mt-1 flex items-center space-x-1';
+        confirmarSenha.classList.remove('border-green-500');
+        confirmarSenha.classList.add('border-red-500');
+    }
+    lucide.createIcons();
+}
+
+/**
+ * Valida o formulário completo
+ */
+function validatePasswordForm() {
+    const novaSenha = document.getElementById('nova_senha');
+    const confirmarSenha = document.getElementById('confirmar_senha');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (!novaSenha || !confirmarSenha || !submitBtn) return;
+
+    const isPasswordValid = novaSenha.value.length >= 8;
+    const isPasswordMatch = novaSenha.value === confirmarSenha.value && confirmarSenha.value.length > 0;
+
+    // Habilitar/desabilitar botão
+    if (isPasswordValid && isPasswordMatch) {
+        submitBtn.disabled = false;
+        submitBtn.className = submitBtn.className.replace(/bg-gray-400|cursor-not-allowed/g, '') +
+            ' bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.className = submitBtn.className.replace(/bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer/g, '') +
+            ' bg-gray-400 cursor-not-allowed';
+    }
+}
+
+/**
+ * Inicializa a validação de senha para um formulário
+ */
+function initializePasswordValidation() {
+    const novaSenha = document.getElementById('nova_senha');
+    const confirmarSenha = document.getElementById('confirmar_senha');
+
+    if (novaSenha) {
+        novaSenha.addEventListener('input', function() {
+            updatePasswordStrength(this.value);
+            checkPasswordMatch();
+            validatePasswordForm();
+        });
+    }
+
+    if (confirmarSenha) {
+        confirmarSenha.addEventListener('input', function() {
+            checkPasswordMatch();
+            validatePasswordForm();
+        });
+    }
+
+    // Validar inicialmente
+    validatePasswordForm();
+}
+
+// Inicializar quando o DOM carregar
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+    initializePasswordValidation();
+});
+
 
 // Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {

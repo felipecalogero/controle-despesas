@@ -2,9 +2,9 @@
 
 namespace Core\Modules\Usuario\Cadastro\Application\UseCases;
 
-use Core\Modules\Usuario\Cadastro\Application\Domain\Gateways\CadastroGateway;
 use Core\Modules\Usuario\Cadastro\Application\UseCases\Inputs\CriarUsuarioInput;
 use Core\Modules\Usuario\Cadastro\Application\UseCases\Outputs\CriarUsuarioOutput;
+use Core\Modules\Usuario\Cadastro\Domain\Gateways\CadastroGateway;
 use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 use Core\Modules\Usuario\Login\Domain\Rules\UsuarioJaExisteRule;
 

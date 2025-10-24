@@ -6,6 +6,6 @@ class ListarDespesasOutput
 {
     public function __construct(
         public readonly array $despesas,
-        public readonly int $total
+        public readonly float $total
     ) {}
 }

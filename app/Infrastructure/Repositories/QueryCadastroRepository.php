@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Models\User;
-use Core\Modules\Usuario\Cadastro\Application\Domain\Gateways\CadastroGateway;
+use Core\Modules\Usuario\Cadastro\Domain\Gateways\CadastroGateway;
 use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 use Core\Modules\Usuario\Login\Domain\Exceptions\UsuarioNaoEncontradoException;
 

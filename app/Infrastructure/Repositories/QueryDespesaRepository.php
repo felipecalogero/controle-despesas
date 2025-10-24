@@ -104,26 +104,26 @@ class QueryDespesaRepository implements DespesaGateway
         );
     }
 
-    public function filterDespesas(FiltrarDespesasInput $despesasInput): array
+    public function filterDespesas(array $filtros): array
     {
         $usuarioId = auth()->user()->id;
 
         $query = Despesa::query()->where('user_id', $usuarioId);
 
-        if(!empty($despesasInput->descricao)){
-            $query->where('descricao', 'like', '%'.$despesasInput->descricao.'%');
+        if(!empty($filtros['descricao'])){
+            $query->where('descricao', 'like', '%'.$filtros['descricao'].'%');
         }
 
-        if(!empty($despesasInput->mes)){
-            $query->whereMonth('data', $despesasInput->mes);
+        if(!empty($filtros['mes'])){
+            $query->whereMonth('data', $filtros['mes']);
         }
 
-        if(!empty($despesasInput->dataInicial)){
-            $query->whereDate('data', '>=', $despesasInput->dataInicial);
+        if(!empty($filtros['dataInicial'])){
+            $query->whereDate('data', '>=', $filtros['dataInicial']);
         }
 
-        if(!empty($despesasInput->dataFinal)){
-            $query->whereDate('data', '<=', $despesasInput->dataFinal);
+        if(!empty($filtros['dataFinal'])){
+            $query->whereDate('data', '<=', $filtros['dataFinal']);
         }
 
         return $query

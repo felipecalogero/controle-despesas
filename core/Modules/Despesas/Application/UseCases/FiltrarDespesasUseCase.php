@@ -14,7 +14,14 @@ class FiltrarDespesasUseCase
 
     public function execute(FiltrarDespesasInput $despesasInput): FiltrarDespesasOutput
     {
-        $despesas = $this->despesaInterface->filterDespesas($despesasInput);
+        $filtros = [
+            'descricao' => $despesasInput->descricao,
+            'mes' => $despesasInput->mes,
+            'data_inicial' => $despesasInput->dataInicial,
+            'data_final' => $despesasInput->dataFinal,
+        ];
+
+        $despesas = $this->despesaInterface->filterDespesas($filtros);
         $total = $this->despesaInterface->getTotal($despesas);
         return new FiltrarDespesasOutput(
             $despesas,

@@ -15,6 +15,10 @@ class Despesa extends Model
         'total',
     ];
 
+    protected $casts = [
+        'valor' => 'float',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

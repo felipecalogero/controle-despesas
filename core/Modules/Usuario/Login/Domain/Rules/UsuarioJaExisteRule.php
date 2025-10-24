@@ -3,7 +3,7 @@
 namespace Core\Modules\Usuario\Login\Domain\Rules;
 
 
-use Core\Modules\Usuario\Cadastro\Application\Domain\Gateways\CadastroGateway;
+use Core\Modules\Usuario\Cadastro\Domain\Gateways\CadastroGateway;
 use Core\Modules\Usuario\Login\Domain\Exceptions\UsuarioJaExisteException;
 
 class UsuarioJaExisteRule

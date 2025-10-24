@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Modules\Usuario\Cadastro\Application\Domain\Gateways;
+namespace Core\Modules\Usuario\Cadastro\Domain\Gateways;
 
 use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 

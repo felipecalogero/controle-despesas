@@ -6,7 +6,8 @@
 @section('content')
 
     @if(session('sucesso'))
-        <div class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl mb-6 flex items-center space-x-3">
+        <div
+            class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl mb-6 flex items-center space-x-3">
             <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
             <span>{{ session('sucesso') }}</span>
         </div>
@@ -54,7 +55,8 @@
                                 <label for="sobrenome" class="block text-sm font-medium text-gray-700">
                                     Sobrenome
                                 </label>
-                                <input type="text" id="sobrenome" name="sobrenome" value="{{ auth()->user()->last_name ?? '' }}"
+                                <input type="text" id="sobrenome" name="sobrenome"
+                                       value="{{ auth()->user()->last_name ?? '' }}"
                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                                        placeholder="Seu sobrenome">
                             </div>
@@ -72,7 +74,8 @@
                                 <label for="telefone" class="block text-sm font-medium text-gray-700">
                                     Telefone
                                 </label>
-                                <input type="tel" id="telefone" name="telefone" value="{{ auth()->user()->telefone ?? '' }}"
+                                <input type="tel" id="telefone" name="telefone"
+                                       value="{{ auth()->user()->telefone ?? '' }}"
                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                                        placeholder="(11) 99999-9999">
                             </div>
@@ -88,7 +91,6 @@
                     </form>
                 </div>
             </div>
-
             <!-- Configurações Financeiras -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
@@ -106,9 +108,11 @@
                                     Salário Mensal
                                 </label>
                                 <div class="relative">
-                                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+                                    <span
+                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
                                     <input type="number" id="salario_mensal" name="salario_mensal"
-                                           value="{{ auth()->user()->salario_mensal ?? '' }}" step="0.01"
+                                           value="{{ old('salario_mensal', $configFinanceiro->salario ?? '') }}"
+                                           step="0.01"
                                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                                            placeholder="0,00">
                                 </div>
@@ -123,9 +127,11 @@
                                 </label>
                                 <div class="relative">
                                     <input type="number" id="limite_alertas" name="limite_alertas"
-                                           value="{{ auth()->user()->limite_alertas ?? '80' }}" min="1" max="100"
+                                           value="{{ old('limite_alertas', $configFinanceiro->limite ?? '') }}" min="1"
+                                           max="100"
                                            class="w-full pr-12 pl-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
-                                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
+                                    <span
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
                                 </div>
                                 <p class="text-sm text-gray-500">
                                     Receba alertas quando seus gastos atingirem esta porcentagem do seu salário.
@@ -149,49 +155,117 @@
                 <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center space-x-2">
                         <i data-lucide="lock" class="w-5 h-5"></i>
-                        <span>Alteração de Senha</span>
+                        <span>
+                @if($isOAuthUser)
+                                Criar Senha
+                            @else
+                                Alterar Senha
+                            @endif
+            </span>
                     </h3>
                 </div>
                 <div class="p-6">
+
+                    @if($isOAuthUser)
+                        <!-- Banner Informativo para OAuth -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                            <div class="flex items-start space-x-3">
+                                <i data-lucide="shield" class="w-5 h-5 text-blue-600 mt-0.5"></i>
+                                <div>
+                                    <p class="text-blue-800 font-medium">Crie uma senha para sua conta</p>
+                                    <p class="text-blue-600 text-sm mt-1">
+                                        Como você entrou com {{ $usuario->provider ?? 'rede social' }},
+                                        crie uma senha para acessar com email também.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <form action="{{ route('configuracoes.alterar-senha') }}" method="POST">
                         @csrf
-                        <div class="space-y-4">
-                            <div class="space-y-2">
+
+                        @if(!$isOAuthUser)
+                            <!-- Campo Senha Atual (APENAS para usuários com senha existente) -->
+                            <div class="space-y-2 mb-4">
                                 <label for="senha_atual" class="block text-sm font-medium text-gray-700">
                                     Senha Atual <span class="text-red-500">*</span>
                                 </label>
-                                <input type="password" id="senha_atual" name="senha_atual"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
-                                       placeholder="Digite sua senha atual" required>
+                                <div class="relative">
+                                    <input type="password" id="senha_atual" name="senha_atual"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 pr-12"
+                                           placeholder="Sua senha atual" required>
+                                    <button type="button" onclick="togglePassword('senha_atual', this)"
+                                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <i data-lucide="eye" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
                             </div>
+                        @endif
 
-                            <div class="space-y-2">
-                                <label for="nova_senha" class="block text-sm font-medium text-gray-700">
+                        <!-- Nova Senha -->
+                        <div class="space-y-2">
+                            <label for="nova_senha" class="block text-sm font-medium text-gray-700">
+                                @if($isOAuthUser)
+                                    Criar Senha <span class="text-red-500">*</span>
+                                @else
                                     Nova Senha <span class="text-red-500">*</span>
-                                </label>
+                                @endif
+                            </label>
+                            <div class="relative">
                                 <input type="password" id="nova_senha" name="nova_senha"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
-                                       placeholder="Digite a nova senha" required>
-                                <p class="text-sm text-gray-500">
-                                    Mínimo de 8 caracteres, incluindo letras e números.
-                                </p>
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 pr-12"
+                                       placeholder="Escolha uma senha segura" required>
+                                <button type="button" onclick="togglePassword('nova_senha', this)"
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i data-lucide="eye" class="w-5 h-5"></i>
+                                </button>
                             </div>
 
-                            <div class="space-y-2">
-                                <label for="confirmar_senha" class="block text-sm font-medium text-gray-700">
-                                    Confirmar Nova Senha <span class="text-red-500">*</span>
-                                </label>
-                                <input type="password" id="confirmar_senha" name="confirmar_senha"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
-                                       placeholder="Confirme a nova senha" required>
+                            <!-- Indicador de Força da Senha -->
+                            <div class="mt-2">
+                                <div class="flex items-center space-x-2 text-xs">
+                                    <div class="flex-1 bg-gray-200 rounded-full h-1">
+                                        <div id="passwordStrength"
+                                             class="h-1 rounded-full transition-all duration-300 bg-gray-300"></div>
+                                    </div>
+                                    <span id="passwordStrengthText" class="text-gray-500">Digite uma senha</span>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- Confirmar Senha -->
+                        <div class="space-y-2 mt-4">
+                            <label for="confirmar_senha" class="block text-sm font-medium text-gray-700">
+                                @if($isOAuthUser)
+                                    Confirmar Senha <span class="text-red-500">*</span>
+                                @else
+                                    Confirmar Nova Senha <span class="text-red-500">*</span>
+                                @endif
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="confirmar_senha" name="nova_senha_confirmation"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 pr-12"
+                                       placeholder="Digite a senha novamente" required>
+                                <button type="button" onclick="togglePassword('confirmar_senha', this)"
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i data-lucide="eye" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                            <div id="passwordMatchMessage" class="hidden"></div>
+                        </div>
+
                         <div class="flex justify-end mt-6">
-                            <button type="submit"
-                                    class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                            <button type="submit" id="btn-submit" disabled
+                                    class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-400 text-white font-medium rounded-xl cursor-not-allowed transition-all duration-200">
                                 <i data-lucide="key" class="w-5 h-5"></i>
-                                <span>Alterar Senha</span>
+                                <span>
+                        @if($isOAuthUser)
+                                        Criar Senha
+                                    @else
+                                        Alterar Senha
+                                    @endif
+                    </span>
                             </button>
                         </div>
                     </form>
@@ -211,7 +285,7 @@
                 </div>
                 <div class="p-6 space-y-4">
                     @php
-                        $salario = auth()->user()->salario_mensal ?? 0;
+                        $salario = $configFinanceiro->salario ?? 0;
                         $totalMes = $totalMes ?? 0; // Você precisará passar esta variável do controller
                         $percentual = $salario > 0 ? ($totalMes / $salario) * 100 : 0;
                     @endphp
@@ -220,7 +294,7 @@
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Salário Configurado:</span>
                             <span class="font-medium text-gray-900">
-                                R$ {{ number_format($salario, 2, ',', '.') }}
+                                R$ {{ number_format($configFinanceiro->salario, 2, ',', '.') }}
                             </span>
                         </div>
 
@@ -233,7 +307,8 @@
 
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Percentual Usado:</span>
-                            <span class="font-medium {{ $percentual > 80 ? 'text-red-600' : ($percentual > 60 ? 'text-yellow-600' : 'text-green-600') }}">
+                            <span
+                                class="font-medium {{ $percentual > 80 ? 'text-red-600' : ($percentual > 60 ? 'text-yellow-600' : 'text-green-600') }}">
                                 {{ number_format($percentual, 1) }}%
                             </span>
                         </div>
@@ -242,8 +317,9 @@
                     <!-- Barra de Progresso -->
                     <div class="pt-2">
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
-                                 style="width: {{ min($percentual, 100) }}%"></div>
+                            <div
+                                class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                                style="width: {{ min($percentual, 100) }}%"></div>
                         </div>
                     </div>
 
@@ -251,9 +327,11 @@
                         <div class="text-center pt-2">
                             <p class="text-sm text-gray-600">
                                 @if($percentual > 100)
-                                    <span class="text-red-600 font-medium">⚠️ Você está gastando mais do que ganha!</span>
+                                    <span
+                                        class="text-red-600 font-medium">⚠️ Você está gastando mais do que ganha!</span>
                                 @elseif($percentual > 80)
-                                    <span class="text-yellow-600 font-medium">⚠️ Cuidado! Gastos próximos ao limite.</span>
+                                    <span
+                                        class="text-yellow-600 font-medium">⚠️ Cuidado! Gastos próximos ao limite.</span>
                                 @else
                                     <span class="text-green-600 font-medium">✅ Suas finanças estão sob controle.</span>
                                 @endif
@@ -285,7 +363,8 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            <div
+                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                         </label>
                     </div>
 
@@ -296,7 +375,8 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            <div
+                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                         </label>
                     </div>
 
