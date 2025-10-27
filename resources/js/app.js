@@ -1,6 +1,5 @@
 import './bootstrap';
 
-// app.js - Controle Completo da Aplicação
 class ExpenseManager {
     constructor() {
         this.despesaAtualId = null;
@@ -9,7 +8,6 @@ class ExpenseManager {
     }
 
     init() {
-        this.inicializarIcones();
         this.inicializarSidebar();
         this.inicializarFiltros();
         this.inicializarAnimacoes();
@@ -17,11 +15,6 @@ class ExpenseManager {
     }
 
     // ==================== INICIALIZAÇÃO ====================
-    inicializarIcones() {
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    }
 
     inicializarSidebar() {
         const sidebar = document.getElementById('sidebar');
@@ -130,7 +123,7 @@ class ExpenseManager {
         if (container && seta) {
             const isAberto = container.classList.toggle('aberto');
             seta.classList.toggle('rotacionar', isAberto);
-            this.inicializarIcones();
+            // ❌ REMOVIDO: this.inicializarIcones();
         }
     }
 
@@ -313,7 +306,7 @@ class ExpenseManager {
             setTimeout(callback, 100);
         }
 
-        this.inicializarIcones();
+        // ❌ REMOVIDO: this.inicializarIcones();
     }
 
     fecharModalGenerico(modalId, overlayId, contentId, callback = null) {
@@ -381,7 +374,7 @@ function togglePassword(inputId, button) {
         input.type = 'password';
         icon.setAttribute('data-lucide', 'eye');
     }
-    lucide.createIcons();
+    // ❌ REMOVIDO: createIcons();
 }
 
 /**
@@ -414,9 +407,6 @@ function checkPasswordStrength(password) {
     return { strength, feedback };
 }
 
-/**
- * Atualiza a barra de força da senha
- */
 /**
  * Atualiza a barra de força da senha
  */
@@ -503,7 +493,6 @@ function checkPasswordMatch() {
         confirmarSenha.classList.remove('border-green-500');
         confirmarSenha.classList.add('border-red-500');
     }
-    lucide.createIcons();
 }
 
 /**
@@ -512,9 +501,16 @@ function checkPasswordMatch() {
 function validatePasswordForm() {
     const novaSenha = document.getElementById('nova_senha');
     const confirmarSenha = document.getElementById('confirmar_senha');
-    const submitBtn = document.querySelector('button[type="submit"]');
+    const submitBtn = document.getElementById('btn-submit'); // ✅ Mude para ID
 
-    if (!novaSenha || !confirmarSenha || !submitBtn) return;
+    if (!novaSenha || !confirmarSenha || !submitBtn) {
+        console.log('❌ Elementos não encontrados:', {
+            novaSenha: !!novaSenha,
+            confirmarSenha: !!confirmarSenha,
+            submitBtn: !!submitBtn
+        });
+        return;
+    }
 
     const isPasswordValid = novaSenha.value.length >= 8;
     const isPasswordMatch = novaSenha.value === confirmarSenha.value && confirmarSenha.value.length > 0;
@@ -522,12 +518,12 @@ function validatePasswordForm() {
     // Habilitar/desabilitar botão
     if (isPasswordValid && isPasswordMatch) {
         submitBtn.disabled = false;
-        submitBtn.className = submitBtn.className.replace(/bg-gray-400|cursor-not-allowed/g, '') +
-            ' bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer';
+        submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+        submitBtn.classList.add('bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'hover:from-purple-600', 'hover:to-pink-600', 'shadow-lg', 'hover:shadow-xl', 'cursor-pointer');
     } else {
         submitBtn.disabled = true;
-        submitBtn.className = submitBtn.className.replace(/bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl cursor-pointer/g, '') +
-            ' bg-gray-400 cursor-not-allowed';
+        submitBtn.classList.remove('bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'hover:from-purple-600', 'hover:to-pink-600', 'shadow-lg', 'hover:shadow-xl', 'cursor-pointer');
+        submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
     }
 }
 
@@ -553,19 +549,12 @@ function initializePasswordValidation() {
         });
     }
 
-    // Validar inicialmente
     validatePasswordForm();
 }
 
-// Inicializar quando o DOM carregar
-document.addEventListener('DOMContentLoaded', function() {
-    lucide.createIcons();
-    initializePasswordValidation();
-});
-
-
 // Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
+    initializePasswordValidation();
     window.expenseManager = new ExpenseManager();
 });
 
@@ -580,3 +569,8 @@ window.fecharModalExclusao = () => window.expenseManager?.fecharModalExclusao();
 window.confirmarExclusao = () => window.expenseManager?.confirmarExclusao();
 window.toggleFiltros = (event) => window.expenseManager?.toggleFiltros(event);
 window.limparFiltros = (event) => window.expenseManager?.limparFiltros(event);
+window.togglePassword = togglePassword;
+window.checkPasswordMatch = checkPasswordMatch;
+window.updatePasswordStrength = updatePasswordStrength;
+window.validatePasswordForm = validatePasswordForm;
+window.initializePasswordValidation = initializePasswordValidation;

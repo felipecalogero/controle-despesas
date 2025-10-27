@@ -8,10 +8,11 @@ use Core\Modules\Despesas\Application\UseCases\BuscarDespesasMesUseCase;
 use Core\Modules\Financeiro\Application\UseCases\BuscarConfigFinanceiroUseCase;
 use Core\Modules\Financeiro\Application\UseCases\Input\FinanceiroInput;
 use Core\Modules\Financeiro\Application\UseCases\SalvarFinanceiroUseCase;
+use Core\Modules\Usuario\Application\UseCases\AlterarSenhaUseCase;
+use Core\Modules\Usuario\Application\UseCases\Input\AlterarSenhaInput;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class ConfiguracoesController extends Controller
 {
@@ -19,6 +20,7 @@ class ConfiguracoesController extends Controller
         private BuscarDespesasMesUseCase $buscarDespesasMensalUseCase,
         private SalvarFinanceiroUseCase $salvarFinanceiroUseCase,
         private BuscarConfigFinanceiroUseCase $buscarConfigFinanceiroUseCase,
+        private AlterarSenhaUseCase $alterarSenhaUseCase,
     ) {
     }
 
@@ -56,9 +58,22 @@ class ConfiguracoesController extends Controller
             ->with('sucesso', 'Configurações financeiras atualizadas com sucesso!');
     }
 
-    public function alterarSenha(Request $request)
+    public function alterarSenha(AlterarSenhaRequest $request)
     {
-        // Lógica para alterar senha
-        return back()->with('sucesso', 'Senha alterada com sucesso!');
+        $input = new AlterarSenhaInput(
+            auth()->user()->id,
+            $request->senha_atual,
+            $request->nova_senha,
+            $request->nova_senha_confirmation
+        );
+
+        $output = $this->alterarSenhaUseCase->execute($input);
+
+        if ($output->sucesso) {
+            return redirect()->route('configuracoes.index')
+                ->with('sucesso', $output->mensagem);
+        }
+
+        return back()->withErrors(['error' => $output->mensagem]);
     }
 }

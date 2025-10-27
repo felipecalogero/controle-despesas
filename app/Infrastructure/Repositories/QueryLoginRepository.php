@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class QueryLoginRepository implements LoginGateway
 {
-    public function buscarUsuario(string $email)
+    public function buscarUsuario(string $email) : UsuarioEntity
     {
         $user = User::where('email', $email)->first();
 
@@ -28,9 +28,9 @@ class QueryLoginRepository implements LoginGateway
         );
     }
 
-    public function verificarSenha(UsuarioEntity $user, string $password)
+    public function atualizarSenha(int $usuarioId, string $password): bool
     {
-        if (!Hash::check($password, $user->password)) {
+        if (!Hash::check($password, $usuarioId->password)) {
             throw new SenhaIncorretaException();
         }
     }

@@ -8,9 +8,11 @@ use App\Infrastructure\Repositories\QueryDespesaRepository;
 use App\Infrastructure\Repositories\QueryFinanceiroRepository;
 use App\Infrastructure\Repositories\QueryLoginRepository;
 use App\Infrastructure\Repositories\QuerySocialRepository;
+use App\Infrastructure\Repositories\QueryUsuarioRepository;
 use Core\Modules\Despesas\Domain\Gateways\DespesaGateway;
 use Core\Modules\Financeiro\Domain\Gateway\FinanceiroGateway;
 use Core\Modules\Usuario\Cadastro\Domain\Gateways\CadastroGateway;
+use Core\Modules\Usuario\Domain\Gateway\UsuarioGateway;
 use Core\Modules\Usuario\Login\Domain\Gateways\LoginGateway;
 use Core\Modules\Usuario\Social\Domain\Gateways\SocialGateway;
 use Illuminate\Support\ServiceProvider;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SocialGateway::class, QueryCadastroRepository::class);
         $this->app->bind(SocialGateway::class, QuerySocialRepository::class);
         $this->app->bind(FinanceiroGateway::class, QueryFinanceiroRepository::class);
+        $this->app->bind(UsuarioGateway::class, QueryUsuarioRepository::class);
     }
 
     /**

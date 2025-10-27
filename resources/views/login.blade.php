@@ -307,9 +307,10 @@
 
 <script src="js/login.js"></script>
 <script>
-    // Inicializar ícones Lucide
     document.addEventListener('DOMContentLoaded', function() {
-        lucide.createIcons();
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
     });
 </script>
 </body>

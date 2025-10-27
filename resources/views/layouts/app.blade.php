@@ -26,7 +26,17 @@
 @include('layouts.partials.modals.nova-despesa')
 @include('layouts.partials.modals.confirmar-exclusao')
 
-<script src="{{ asset('js/app.js') }}"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script>
+    // Inicializar Lucide quando tudo estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    });
+</script>
 
 </body>
 </html>

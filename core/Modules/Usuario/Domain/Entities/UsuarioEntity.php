@@ -25,4 +25,14 @@ class UsuarioEntity
         $this->email = $email;
         $this->password = $password;
     }
+
+    public function temSenha(): bool
+    {
+        return !empty($this->senha);
+    }
+
+    public function isOAuth(): bool
+    {
+        return !empty($this->provider);
+    }
 }
