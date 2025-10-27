@@ -260,12 +260,12 @@
                                     class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-400 text-white font-medium rounded-xl cursor-not-allowed transition-all duration-200">
                                 <i data-lucide="key" class="w-5 h-5"></i>
                                 <span>
-                        @if($isOAuthUser)
+                                    @if($isOAuthUser)
                                         Criar Senha
                                     @else
                                         Alterar Senha
                                     @endif
-                    </span>
+                                </span>
                             </button>
                         </div>
                     </form>

@@ -7,6 +7,7 @@ use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 
 interface UsuarioGateway
 {
-    public function atualizarSenha(int $usuarioId, string $novaSenhaHash): bool;
     public function buscarUsuarioId(int $usuarioId): ?UsuarioEntity;
+    public function atualizarSenha(int $usuarioId, string $novaSenhaHash): bool;
+    public function atualizarPerfil(array $dadosPerfil): bool;
 }

@@ -23,6 +23,7 @@ class FiltrarDespesasUseCase
 
         $despesas = $this->despesaInterface->filterDespesas($filtros);
         $total = $this->despesaInterface->getTotal($despesas);
+
         return new FiltrarDespesasOutput(
             $despesas,
             $total

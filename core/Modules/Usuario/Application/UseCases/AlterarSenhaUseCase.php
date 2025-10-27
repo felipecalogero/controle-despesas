@@ -16,7 +16,6 @@ class AlterarSenhaUseCase
 
     public function execute(AlterarSenhaInput $input): AlterarSenhaOutput
     {
-        // Buscar usuário
         $usuario = $this->usuarioGateway->buscarUsuarioId($input->usuarioId);
 
         if (!$usuario) {

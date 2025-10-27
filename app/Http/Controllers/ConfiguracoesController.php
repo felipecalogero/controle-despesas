@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AlterarSenhaRequest;
+use App\Http\Requests\AtualizarPerfilRequest;
 use App\Http\Requests\FinanceiroRequest;
 use Core\Modules\Despesas\Application\UseCases\BuscarDespesasMesUseCase;
 use Core\Modules\Financeiro\Application\UseCases\BuscarConfigFinanceiroUseCase;
 use Core\Modules\Financeiro\Application\UseCases\Input\FinanceiroInput;
 use Core\Modules\Financeiro\Application\UseCases\SalvarFinanceiroUseCase;
 use Core\Modules\Usuario\Application\UseCases\AlterarSenhaUseCase;
+use Core\Modules\Usuario\Application\UseCases\AtualizarPerfilUseCase;
 use Core\Modules\Usuario\Application\UseCases\Input\AlterarSenhaInput;
+use Core\Modules\Usuario\Application\UseCases\Input\AtualizarPerfilInput;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +24,7 @@ class ConfiguracoesController extends Controller
         private SalvarFinanceiroUseCase $salvarFinanceiroUseCase,
         private BuscarConfigFinanceiroUseCase $buscarConfigFinanceiroUseCase,
         private AlterarSenhaUseCase $alterarSenhaUseCase,
+        private AtualizarPerfilUseCase $atualizarPerfilUseCase,
     ) {
     }
 
@@ -35,15 +39,27 @@ class ConfiguracoesController extends Controller
         return view('configuracoes', compact('usuario', 'configFinanceiro', 'totalMes', 'isOAuthUser'));
     }
 
-    public function atualizarPerfil(Request $request)
+    public function atualizarPerfil(AtualizarPerfilRequest $request)
     {
-        // Lógica para atualizar perfil
+        $usuarioId = Auth::id();
+        $dados = $request->validated();
+
+        $input = new AtualizarPerfilInput(
+            $usuarioId,
+            $dados['nome'],
+            $dados['sobrenome'],
+            $dados['email'],
+            $dados['telefone'],
+        );
+
+        $this->atualizarPerfilUseCase->execute($input);
+
         return back()->with('sucesso', 'Perfil atualizado com sucesso!');
     }
 
     public function atualizarFinanceiro(FinanceiroRequest $request)
     {
-        $usuarioId = auth()->user()->id;
+        $usuarioId = Auth::id();
         $dados = $request->validated();
 
         $input = new FinanceiroInput(
@@ -54,8 +70,7 @@ class ConfiguracoesController extends Controller
 
         $this->salvarFinanceiroUseCase->execute($input);
 
-        return redirect()->route('configuracoes.index')
-            ->with('sucesso', 'Configurações financeiras atualizadas com sucesso!');
+        return back()->with('sucesso', 'Configurações financeiras atualizadas com sucesso!');
     }
 
     public function alterarSenha(AlterarSenhaRequest $request)
