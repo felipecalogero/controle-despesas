@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\ConfiguracoesController;
 use App\Http\Controllers\RelatorioController;
+use App\Http\Controllers\SocialController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DespesaController;
 use App\Http\Controllers\LoginController;
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 //    despesas
     Route::prefix('despesas')->group(function () {
@@ -14,6 +17,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/criar', [DespesaController::class, 'create'])->name('despesas.create');
         Route::get('/{id}/editar', [DespesaController::class, 'edit'])->name('despesas.edit');
 
+        Route::delete('/excluir-multiplas', [DespesaController::class, 'excluirMultiplas'])->name('despesas.excluir-multiplas');
         Route::delete('/{id}', [DespesaController::class, 'destroy'])->name('despesas.destroy');
 
         Route::put('/{id}', [DespesaController::class, 'update'])->name('despesas.update');
@@ -48,5 +52,5 @@ Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 Route::get('/auth/facebook/redirect', function () {
     return Socialite::driver('facebook')->redirect();
 })->name('facebook.redirect');
-Route::get('/auth/facebook/callback', [LoginController::class, 'loginWithFacebook'])->name('login.facebook');
+Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebook'])->name('login.facebook');
 

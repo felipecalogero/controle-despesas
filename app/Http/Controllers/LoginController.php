@@ -30,7 +30,6 @@ class LoginController
 {
     public function __construct(
         private AutenticarUsuarioUseCase $autenticarUsuarioUseCase,
-        private FacebookUseCase $facebookUseCase,
         private CriarUsuarioUseCase $criarUsuarioUseCase,
     ){}
 
@@ -117,14 +116,9 @@ class LoginController
         }
     }
 
-    public function loginWithFacebook() {
-        $facebookUser = $this->facebookUseCase->socialGateway->getFacebookUser();
-        $output = $this->facebookUseCase->execute($facebookUser);
-
-        Auth::loginUsingId($output->id);
-
-        return redirect()
-            ->route('despesas.index')
-            ->with('success', $output->message);
+    public function logout()
+    {
+        Auth::logout();
+        return view('login');
     }
 }

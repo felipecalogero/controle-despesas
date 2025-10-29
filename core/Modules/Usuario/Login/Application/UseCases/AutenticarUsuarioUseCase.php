@@ -16,12 +16,12 @@ class AutenticarUsuarioUseCase
 
     public function execute(AutenticarUsuarioInput $input)
     {
-        $user = $this->loginGateway->buscarUsuario($input->email);
-        $this->loginGateway->verificarSenha($user, $input->password);
+        $usuario = $this->loginGateway->buscarUsuario($input->email);
+        $this->loginGateway->verificarSenha($usuario->id, $input->password);
 
         return new AutenticarUsuarioOutput(
-            $user->id,
-            $user->email,
+            $usuario->id,
+            $usuario->email,
             'Login realizado com sucesso!'
         );
     }

@@ -11,10 +11,10 @@ use App\Infrastructure\Repositories\QuerySocialRepository;
 use App\Infrastructure\Repositories\QueryUsuarioRepository;
 use Core\Modules\Despesas\Domain\Gateways\DespesaGateway;
 use Core\Modules\Financeiro\Domain\Gateway\FinanceiroGateway;
+use Core\Modules\Social\Domain\Gateway\SocialGateway;
 use Core\Modules\Usuario\Cadastro\Domain\Gateways\CadastroGateway;
 use Core\Modules\Usuario\Domain\Gateway\UsuarioGateway;
 use Core\Modules\Usuario\Login\Domain\Gateways\LoginGateway;
-use Core\Modules\Usuario\Social\Domain\Gateways\SocialGateway;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -37,6 +37,12 @@
                 <i data-lucide="settings" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                 <span class="font-medium">Configurações</span>
             </a>
+
+            <a href="{{ route('logout') }}"
+               class="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 group">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                <span class="font-medium">Sair</span>
+            </a>
         </nav>
 
         <!-- User Profile -->
@@ -46,7 +52,7 @@
                     <i data-lucide="user" class="w-5 h-5 text-white"></i>
                 </div>
                 <div>
-                    <p class="text-white font-medium text-sm">Felipe</p>
+                    <p class="text-white font-medium text-sm">{{ auth()->user()->name }}</p>
                     <p class="text-gray-400 text-xs">Desenvolvedor</p>
                 </div>
             </div>

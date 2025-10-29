@@ -34,4 +34,15 @@ class QueryLoginRepository implements LoginGateway
             throw new SenhaIncorretaException();
         }
     }
+
+    public function verificarSenha(int $usuarioId, string $password): bool
+    {
+        $usuario = User::find($usuarioId);
+
+        if (!$usuario) {
+            return false;
+        }
+
+        return Hash::check($password, $usuario->password);
+    }
 }

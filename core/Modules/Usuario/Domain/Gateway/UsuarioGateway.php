@@ -10,4 +10,5 @@ interface UsuarioGateway
     public function buscarUsuarioId(int $usuarioId): ?UsuarioEntity;
     public function atualizarSenha(int $usuarioId, string $novaSenhaHash): bool;
     public function atualizarPerfil(array $dadosPerfil): bool;
+    public function findOrCreateFromSocial(string $provider, object $socialUser);
 }

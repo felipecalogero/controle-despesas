@@ -25,6 +25,55 @@ class QueryUsuarioRepository implements UsuarioGateway
         );
     }
 
+    public function findOrCreateFromSocial(string $provider, object $socialUser): UsuarioEntity
+    {
+        $nameParts = explode(' ', $socialUser->name);
+        $firstName = $nameParts[0];
+        $lastName = count($nameParts) > 1 ? implode(' ', array_slice($nameParts, 1)) : '';
+
+        // Busca usuário existente pelo e-mail
+        $user = User::where('email', $socialUser->email)->first();
+
+        if ($user) {
+            if (!$user->provider_id) {
+                $user->update([
+                    'provider_id' => $socialUser->id,
+                    'provider_name' => $provider,
+                ]);
+            }
+
+            return new UsuarioEntity(
+                $user->id,
+                $user->name,
+                $user->last_name,
+                $user->email,
+                $user->avatar,
+                $user->provider_name,
+                $user->provider_id
+            );
+        }
+
+        // Cria novo usuário
+        $newUser = User::create([
+            'name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $socialUser->email,
+            'avatar' => $socialUser->avatar,
+            'provider_id' => $socialUser->id,
+            'provider_name' => $provider,
+        ]);
+
+        return new UsuarioEntity(
+            $newUser->id,
+            $newUser->name,
+            $newUser->last_name,
+            $newUser->email,
+            $newUser->avatar,
+            $newUser->provider_name,
+            $newUser->provider_id
+        );
+    }
+
     public function atualizarSenha(int $usuarioId, string $novaSenhaHash): bool
     {
         return User::where('id', $usuarioId)

@@ -163,11 +163,20 @@
                     <span>Suas Despesas</span>
                 </h3>
 
-                <button onclick="abrirModalNovaDespesa()"
-                        class="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span>Nova Despesa</span>
-                </button>
+                <div class="flex items-center space-x-2">
+                    <!-- Botão Excluir Selecionadas -->
+                    <button id="btn-excluir-selecionados" onclick="abrirModalExclusaoMultipla()"
+                            class="hidden inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span id="texto-excluir-selecionadas">Excluir Selecionadas</span>
+                    </button>
+
+                    <button id="btn-nova-despesa" onclick="abrirModalNovaDespesa()"
+                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Nova Despesa</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -200,6 +209,10 @@
                     <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <input type="checkbox" id="select-all" onchange="toggleSelecionarTodas()"
+                                   class="rounded border-gray-300 text-purple-500 focus:ring-purple-500">
+                        </th>
+                        <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Descrição
                         </th>
                         <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -216,6 +229,11 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($despesas as $despesa)
                         <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-4 lg:px-6 py-4">
+                                <input type="checkbox" value="{{ $despesa->id }}"
+                                       onchange="toggleSelecionarDespesa({{ $despesa->id }}, this)"
+                                       class="checkbox-despesa rounded border-gray-300 text-purple-500 focus:ring-purple-500">
+                            </td>
                             <td class="px-4 lg:px-6 py-4">
                                 <div class="flex items-center space-x-3">
                                     <div
@@ -238,10 +256,10 @@
                                 </div>
                             </td>
                             <td class="px-4 lg:px-6 py-4 text-right">
-                    <span
-                        class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-1 rounded-full text-xs lg:text-sm font-medium bg-red-100 text-red-800 whitespace-nowrap">
-                        R$ {{ number_format($despesa->valor, 2, ',', '.') }}
-                    </span>
+                <span
+                    class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-1 rounded-full text-xs lg:text-sm font-medium bg-red-100 text-red-800 whitespace-nowrap">
+                    R$ {{ number_format($despesa->valor, 2, ',', '.') }}
+                </span>
                             </td>
                             <td class="px-4 lg:px-6 py-4">
                                 <div class="flex items-center justify-center space-x-1 lg:space-x-2">
@@ -252,7 +270,7 @@
                                     </button>
 
                                     <button onclick="abrirModalExclusao({{ $despesa->id }}, '{{ $despesa->descricao ?? 'Despesa sem descrição' }}')"
-                                            class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-1 bg-red-100 text-red-700 text-xs lg:text-sm font-medium rounded-lg hover:bg-red-200 transition-colors whitespace-nowrap">
+                                            class="btn-excluir-unico inline-flex items-center px-2 py-1 lg:px-3 lg:py-1 bg-red-100 text-red-700 text-xs lg:text-sm font-medium rounded-lg hover:bg-red-200 transition-colors whitespace-nowrap">
                                         <i data-lucide="trash-2" class="w-3 h-3 lg:w-4 lg:h-4 mr-1"></i>
                                         Excluir
                                     </button>
@@ -272,6 +290,9 @@
                                 <!-- Header do Card -->
                                 <div class="flex items-start justify-between mb-3">
                                     <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                        <input type="checkbox" value="{{ $despesa->id }}"
+                                               onchange="toggleSelecionarDespesa({{ $despesa->id }}, this)"
+                                               class="checkbox-despesa mt-1 rounded border-gray-300 text-purple-500 focus:ring-purple-500">
                                         <div
                                             class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                             <i data-lucide="receipt" class="w-5 h-5 text-white"></i>
@@ -306,7 +327,7 @@
                                     </button>
 
                                     <button onclick="abrirModalExclusao({{ $despesa->id }}, '{{ $despesa->descricao ?? 'Despesa sem descrição' }}')"
-                                            class="inline-flex items-center px-3 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors flex-1 justify-center mr-2">
+                                            class="btn-excluir-unico inline-flex items-center px-3 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors flex-1 justify-center">
                                         <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
                                         Excluir
                                     </button>

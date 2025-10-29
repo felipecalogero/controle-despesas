@@ -4,6 +4,8 @@ class ExpenseManager {
     constructor() {
         this.despesaAtualId = null;
         this.exclusaoDespesaId = null;
+        this.despesasSelecionadas = [];
+        this.selecionarTodos = false;
         this.init();
     }
 
@@ -12,6 +14,7 @@ class ExpenseManager {
         this.inicializarFiltros();
         this.inicializarAnimacoes();
         this.inicializarEventListenersGlobais();
+        this.inicializarSelecaoMultipla();
     }
 
     // ==================== INICIALIZAÇÃO ====================
@@ -237,16 +240,214 @@ class ExpenseManager {
         this.abrirModalExclusao(this.despesaAtualId, descricao);
     }
 
+    // ==================== SELEÇÃO MÚLTIPLA ====================
+
+    inicializarSelecaoMultipla() {
+        this.atualizarBotoesExclusao();
+
+        // Verificar se os elementos existem
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.checkbox-despesa');
+        const btnExcluir = document.getElementById('btn-excluir-selecionados');
+    }
+
+    limparSelecoes() {
+        this.despesasSelecionadas = [];
+        this.selecionarTodos = false;
+
+        const checkboxes = document.querySelectorAll('.checkbox-despesa');
+        const selectAll = document.getElementById('select-all');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        if (selectAll) {
+            selectAll.checked = false;
+        }
+
+        this.atualizarBotoesExclusao();
+    }
+
+    // Alternar seleção de uma despesa
+    toggleSelecionarDespesa(id, element) {
+        const index = this.despesasSelecionadas.indexOf(id);
+
+        if (index > -1) {
+            this.despesasSelecionadas.splice(index, 1);
+            element.checked = false;
+        } else {
+            this.despesasSelecionadas.push(id);
+            element.checked = true;
+        }
+
+        this.atualizarBotoesExclusao();
+        this.atualizarSelecionarTodos();
+    }
+
+    // Selecionar/Deselecionar todas as despesas
+    toggleSelecionarTodas() {
+        this.selecionarTodos = !this.selecionarTodos;
+
+        const checkboxes = document.querySelectorAll('.checkbox-despesa');
+        const ids = [];
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.selecionarTodos;
+            if (this.selecionarTodos) {
+                ids.push(parseInt(checkbox.value));
+            }
+        });
+
+        this.despesasSelecionadas = this.selecionarTodos ? ids : [];
+        this.atualizarBotoesExclusao();
+        this.atualizarSelecionarTodos();
+    }
+
+    // Atualizar o estado do checkbox "Selecionar Todos"
+    atualizarSelecionarTodos() {
+        const selectAllCheckbox = document.getElementById('select-all');
+        const totalCheckboxes = document.querySelectorAll('.checkbox-despesa').length;
+
+        if (selectAllCheckbox) {
+            if (this.despesasSelecionadas.length === totalCheckboxes && totalCheckboxes > 0) {
+                selectAllCheckbox.checked = true;
+                this.selecionarTodos = true;
+            } else {
+                selectAllCheckbox.checked = false;
+                this.selecionarTodos = false;
+            }
+        }
+    }
+
+    // Atualizar a visibilidade dos botões de exclusão
+    atualizarBotoesExclusao() {
+        const btnExcluirSelecionados = document.getElementById('btn-excluir-selecionados');
+        const textoExcluir = document.getElementById('texto-excluir-selecionadas');
+        const btnExcluirUnico = document.querySelectorAll('.btn-excluir-unico');
+        const btnNovaDespesa = document.getElementById('btn-nova-despesa');
+
+        if (btnExcluirSelecionados && textoExcluir) {
+            if (this.despesasSelecionadas.length > 0) {
+                btnExcluirSelecionados.classList.remove('hidden');
+                textoExcluir.textContent = `Excluir Selecionadas (${this.despesasSelecionadas.length})`;
+            } else {
+                btnExcluirSelecionados.classList.add('hidden');
+            }
+        }
+
+        // Mostrar/ocultar botões de exclusão individual E botão Nova Despesa
+        if (btnExcluirUnico && btnExcluirUnico.length > 0) {
+            btnExcluirUnico.forEach(btn => {
+                if (this.despesasSelecionadas.length > 0) {
+                    btn.classList.add('hidden');
+                } else {
+                    btn.classList.remove('hidden');
+                }
+            });
+        }
+
+        // Controlar visibilidade do botão Nova Despesa
+        if (btnNovaDespesa) {
+            if (this.despesasSelecionadas.length > 0) {
+                btnNovaDespesa.classList.add('hidden');
+            } else {
+                btnNovaDespesa.classList.remove('hidden');
+            }
+        }
+    }
+
+    // Abrir modal de exclusão múltipla
+    abrirModalExclusaoMultipla() {
+        if (this.despesasSelecionadas.length === 0) return;
+
+        const modal = document.getElementById('modal-confirmar-exclusao');
+        const overlay = document.getElementById('modal-exclusao-overlay');
+        const content = document.getElementById('modal-exclusao-content');
+        const form = document.getElementById('form-exclusao-despesa');
+        const mensagem = document.getElementById('exclusao-mensagem');
+        const titulo = document.getElementById('exclusao-titulo');
+        const botaoTexto = document.getElementById('exclusao-botao-texto');
+
+        if (!modal || !overlay || !content || !form || !mensagem || !titulo || !botaoTexto) return;
+
+        // Configurar o formulário para exclusão múltipla
+        form.action = "/despesas/excluir-multiplas";
+
+        // Criar input hidden para cada ID selecionado
+        form.querySelectorAll('input[name="ids[]"]').forEach(input => input.remove());
+
+        this.despesasSelecionadas.forEach(id => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = id;
+            form.appendChild(input);
+        });
+
+        // Atualizar mensagem do modal baseado na quantidade
+        if (this.despesasSelecionadas.length === 1) {
+            titulo.textContent = 'Tem certeza que deseja excluir esta despesa?';
+            // Para uma única despesa, você pode buscar o nome se necessário
+            mensagem.innerHTML = `<span class="font-medium text-gray-900">1 despesa</span> será permanentemente removida do sistema.`;
+            botaoTexto.textContent = 'Excluir Despesa';
+        } else {
+            titulo.textContent = 'Tem certeza que deseja excluir estas despesas?';
+            mensagem.innerHTML = `<span class="font-medium text-gray-900">${this.despesasSelecionadas.length} despesas</span> serão permanentemente removidas do sistema.`;
+            botaoTexto.textContent = 'Excluir Despesas';
+        }
+
+        // Mostrar modal usando a função genérica existente
+        this.abrirModalGenerico(
+            'modal-confirmar-exclusao',
+            'modal-exclusao-overlay',
+            'modal-exclusao-content'
+        );
+    }
+
+    // Limpar seleções quando o modal de exclusão fechar
+    fecharModalExclusao() {
+        this.fecharModalGenerico(
+            'modal-confirmar-exclusao',
+            'modal-exclusao-overlay',
+            'modal-exclusao-content',
+            () => {
+                this.exclusaoDespesaId = null;
+                // Não limpar as seleções automaticamente - só após exclusão bem-sucedida
+            }
+        );
+    }
+
     // ==================== MODAL EXCLUSÃO ====================
     abrirModalExclusao(id, descricao) {
+        // Limpar seleções múltiplas quando for exclusão individual
+        this.despesasSelecionadas = [];
+        this.atualizarBotoesExclusao();
+        this.atualizarSelecionarTodos();
+
         this.exclusaoDespesaId = id;
 
         // Atualizar dados do modal
         const descricaoElement = document.getElementById('exclusao-descricao');
         const form = document.getElementById('form-exclusao-despesa');
+        const mensagem = document.getElementById('exclusao-mensagem');
+        const titulo = document.getElementById('exclusao-titulo');
+        const botaoTexto = document.getElementById('exclusao-botao-texto');
 
         if (descricaoElement) descricaoElement.textContent = descricao;
         if (form) form.action = `/despesas/${id}`;
+
+        // Configurar para exclusão individual
+        if (titulo) titulo.textContent = 'Tem certeza que deseja excluir esta despesa?';
+        if (mensagem) {
+            mensagem.innerHTML = `A despesa <span class="font-medium text-gray-900">"${descricao}"</span> será permanentemente removida do sistema.`;
+        }
+        if (botaoTexto) botaoTexto.textContent = 'Sim, Excluir Despesa';
+
+        // Limpar quaisquer inputs de múltiplas IDs
+        if (form) {
+            form.querySelectorAll('input[name="ids[]"]').forEach(input => input.remove());
+        }
 
         this.abrirModalGenerico(
             'modal-confirmar-exclusao',
@@ -567,6 +768,14 @@ window.abrirModalExclusaoDoModalEditar = () => window.expenseManager?.abrirModal
 window.abrirModalExclusao = (id, descricao) => window.expenseManager?.abrirModalExclusao(id, descricao);
 window.fecharModalExclusao = () => window.expenseManager?.fecharModalExclusao();
 window.confirmarExclusao = () => window.expenseManager?.confirmarExclusao();
+
+// FUNÇÕES PARA SELEÇÃO MÚLTIPLA
+window.toggleSelecionarDespesa = (id, element) => window.expenseManager?.toggleSelecionarDespesa(id, element);
+window.toggleSelecionarTodas = () => window.expenseManager?.toggleSelecionarTodas();
+window.abrirModalExclusaoMultipla = () => window.expenseManager?.abrirModalExclusaoMultipla();
+window.limparSelecoes = () => window.expenseManager?.limparSelecoes(); // ← ADICIONE ESTA LINHA
+
+// Funções existentes de filtros e senha
 window.toggleFiltros = (event) => window.expenseManager?.toggleFiltros(event);
 window.limparFiltros = (event) => window.expenseManager?.limparFiltros(event);
 window.togglePassword = togglePassword;

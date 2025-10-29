@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DespesaRequest;
 use App\Http\Requests\FiltrarDespesasRequest;
+use App\Models\Despesa;
 use Core\Modules\Despesas\Application\UseCases\AtualizarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\CriarDespesaUseCase;
 use Core\Modules\Despesas\Application\UseCases\DeletarDespesaUseCase;
@@ -13,6 +14,7 @@ use Core\Modules\Despesas\Application\UseCases\Inputs\AtualizarDespesaInput;
 use Core\Modules\Despesas\Application\UseCases\Inputs\CriarDespesaInput;
 use Core\Modules\Despesas\Application\UseCases\Inputs\FiltrarDespesasInput;
 use Core\Modules\Despesas\Application\UseCases\ListarDespesasUseCase;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class DespesaController extends Controller
@@ -20,7 +22,8 @@ class DespesaController extends Controller
     public function __construct(
         private ListarDespesasUseCase $listarDespesas,
         private FiltrarDespesasUseCase $filtrarDespesas
-    ) {}
+    ) {
+    }
 
     public function index()
     {
@@ -88,10 +91,20 @@ class DespesaController extends Controller
             ->with('sucesso', $output->mensagem);
     }
 
-    public function filtrarDespesas(FiltrarDespesasRequest $request) {
+    public function excluirMultiplas(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        Despesa::whereIn('id', $ids)->delete();
+
+        return back()->with('sucesso', count($ids) . ' despesas excluídas com sucesso.');
+    }
+
+    public function filtrarDespesas(FiltrarDespesasRequest $request)
+    {
         $dados = $request->validated();
 
-        $input = New FiltrarDespesasInput(
+        $input = new FiltrarDespesasInput(
             $dados['descricao'] ?? null,
             $dados['mes'] ?? null,
             $dados['data_inicial'] ?? null,
@@ -103,8 +116,7 @@ class DespesaController extends Controller
         return view('index', [
             'despesas' => $output->despesas,
             'total' => $output->total,
-            'filtros' => $dados
+            'filtros' => $dados,
         ]);
     }
-
 }

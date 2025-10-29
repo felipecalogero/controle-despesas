@@ -3,38 +3,28 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Models\User;
+use Core\Modules\Social\Domain\Gateway\SocialGateway;
 use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
-use Core\Modules\Usuario\Social\Domain\Gateways\SocialGateway;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class QuerySocialRepository implements SocialGateway
 {
-    public function getGoogleUser(): ?UsuarioEntity
+    public function getUser(string $provider): object
     {
-        // TODO: Implement google() method.
+        $socialUser = Socialite::driver($provider)->user();
+
+        return (object) [
+            'id' => $socialUser->getId(),
+            'email' => $socialUser->getEmail(),
+            'name' => $socialUser->getName(),
+            'avatar' => $socialUser->getAvatar(),
+            'provider' => $provider,
+        ];
     }
 
-    public function getFacebookUser(): ?UsuarioEntity
+    public function createTokenForUser(UsuarioEntity $usuario): string
     {
-        $facebookUser = Socialite::driver('facebook')->user();
-
-        if(!$facebookUser) {
-            return null;
-        }
-
-        return new UsuarioEntity(
-            $facebookUser->id,
-            $facebookUser->name,
-            $facebookUser->lastName,
-            $facebookUser->email,
-            Hash::make(Str::random(32))
-        );
-    }
-
-    public function getGithubUser(): ?UsuarioEntity
-    {
-        // TODO: Implement github() method.
+        $userModel = User::findOrFail($usuario->id);
+        return $userModel->createToken('Social Login')->accessToken;
     }
 }

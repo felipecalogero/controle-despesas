@@ -166,12 +166,6 @@
                     </button>
                 </a>
 
-                <button class="w-full py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 hover-scale">
-                    <div class="flex items-center justify-center space-x-2">
-                        <i data-lucide="github" class="w-5 h-5"></i>
-                        <span class="text-gray-700 font-medium">Continuar com GitHub</span>
-                    </div>
-                </button>
             </div>
         </div>
 

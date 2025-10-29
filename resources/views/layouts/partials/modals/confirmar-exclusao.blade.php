@@ -17,7 +17,7 @@
                             <i data-lucide="alert-triangle" class="w-6 h-6 text-white"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-white">Confirmar Exclusão</h2>
+                            <h2 class="text-xl font-bold text-white" id="exclusao-titulo">Confirmar Exclusão</h2>
                         </div>
                     </div>
                     <button onclick="fecharModalExclusao()" class="text-white hover:text-red-200 transition-colors">
@@ -33,10 +33,8 @@
                         <i data-lucide="trash-2" class="w-6 h-6 text-red-600"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Tem certeza que deseja excluir esta despesa?</h3>
-                        <p class="text-gray-600 mb-4">
-                            A despesa <span id="exclusao-descricao" class="font-medium text-gray-900"></span>
-                            será permanentemente removida do sistema.
+                        <p class="text-gray-600 mb-4" id="exclusao-mensagem">
+                            <!-- A mensagem será preenchida via JavaScript -->
                         </p>
                     </div>
                 </div>
@@ -55,7 +53,7 @@
                         <button type="submit"
                                 class="w-full inline-flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            <span>Sim, Excluir Despesa</span>
+                            <span id="exclusao-botao-texto">Excluir Despesa</span>
                         </button>
                     </form>
                 </div>
