@@ -13,7 +13,6 @@ use Core\Modules\Usuario\Application\UseCases\AlterarSenhaUseCase;
 use Core\Modules\Usuario\Application\UseCases\AtualizarPerfilUseCase;
 use Core\Modules\Usuario\Application\UseCases\Input\AlterarSenhaInput;
 use Core\Modules\Usuario\Application\UseCases\Input\AtualizarPerfilInput;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,11 +40,9 @@ class ConfiguracoesController extends Controller
 
     public function atualizarPerfil(AtualizarPerfilRequest $request)
     {
-        $usuarioId = Auth::id();
         $dados = $request->validated();
 
         $input = new AtualizarPerfilInput(
-            $usuarioId,
             $dados['nome'],
             $dados['sobrenome'],
             $dados['email'],
@@ -59,13 +56,13 @@ class ConfiguracoesController extends Controller
 
     public function atualizarFinanceiro(FinanceiroRequest $request)
     {
-        $usuarioId = Auth::id();
-        $dados = $request->validated();
+        $userId = Auth::id();
+        $data = $request->validated();
 
         $input = new FinanceiroInput(
-            $usuarioId,
-            $dados['salario_mensal'],
-            $dados['limite_alertas']
+            $userId,
+            $data['salario_mensal'],
+            $data['limite_alertas']
         );
 
         $this->salvarFinanceiroUseCase->execute($input);
@@ -76,7 +73,7 @@ class ConfiguracoesController extends Controller
     public function alterarSenha(AlterarSenhaRequest $request)
     {
         $input = new AlterarSenhaInput(
-            auth()->user()->id,
+            auth()->user()->email,
             $request->senha_atual,
             $request->nova_senha,
             $request->nova_senha_confirmation

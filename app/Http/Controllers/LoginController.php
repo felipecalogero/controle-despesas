@@ -31,7 +31,8 @@ class LoginController
     public function __construct(
         private AutenticarUsuarioUseCase $autenticarUsuarioUseCase,
         private CriarUsuarioUseCase $criarUsuarioUseCase,
-    ){}
+    ) {
+    }
 
     /**
      * @return Factory|View|Application|\Illuminate\View\View|object
@@ -59,7 +60,7 @@ class LoginController
             $validator = Validator::make($request->all(), (new CadastroRequest())->rules());
 
             if ($validator->fails()) {
-                dd($validator->errors());
+                $validator->errors();
             }
 
             $dados = $validator->validate();
@@ -68,8 +69,9 @@ class LoginController
         }
     }
 
-    private function handleLogin($dados){
-        try{
+    private function handleLogin($dados)
+    {
+        try {
             $input = new AutenticarUsuarioInput(
                 $dados['email'],
                 $dados['password']
@@ -93,27 +95,21 @@ class LoginController
 
     private function handleCadastro($dados)
     {
-        try{
-            $input = new CriarUsuarioInput(
-                $dados['name'],
-                $dados['last_name'],
-                $dados['email'],
-                $dados['password']
-            );
-            $output = $this->criarUsuarioUseCase->execute($input);
+        $input = new CriarUsuarioInput(
+            $dados['name'],
+            $dados['last_name'],
+            $dados['email'],
+            $dados['password'],
+        );
 
-            $user = User::find($output->id);
-            Auth::login($user);
+        $output = $this->criarUsuarioUseCase->execute($input);
 
-            return redirect()
-                ->route('despesas.index')
-                ->with('success', $output->message);
-        } catch(Exception $e){
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['login' => $e->getMessage()]);
-        }
+        $user = User::find($output->id);
+        Auth::login($user);
+
+        return redirect()
+            ->route('despesas.index')
+            ->with('success', $output->message);
     }
 
     public function logout()

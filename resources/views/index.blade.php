@@ -340,3 +340,6 @@
         @endif
     </div>
 @endsection
+@section('scripts')
+    @include('layouts.partials.modals.editar-despesa')
+@endsection

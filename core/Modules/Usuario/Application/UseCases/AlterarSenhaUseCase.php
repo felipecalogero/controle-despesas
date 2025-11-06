@@ -16,21 +16,21 @@ class AlterarSenhaUseCase
 
     public function execute(AlterarSenhaInput $input): AlterarSenhaOutput
     {
-        $usuario = $this->usuarioGateway->buscarUsuarioId($input->usuarioId);
+        $usuario = $this->usuarioGateway->getUser($input->userMail);
 
         if (!$usuario) {
             return new AlterarSenhaOutput(false, 'Usuário não encontrado');
         }
 
         // Se usuário tem senha, verificar senha atual
-        if (!empty($usuario->password) && !Hash::check($input->senha, $usuario->password)) {
+        if (!empty($usuario->password) && !Hash::check($input->password, $usuario->password)) {
             return new AlterarSenhaOutput(false, 'Senha atual incorreta');
         }
 
         // Atualizar senha
-        $senhaAlterada = $this->usuarioGateway->atualizarSenha(
+        $senhaAlterada = $this->usuarioGateway->updatePassword(
             $input->usuarioId,
-            Hash::make($input->novaSenha)
+            Hash::make($input->newPassword)
         );
 
         if (!$senhaAlterada) {

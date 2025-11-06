@@ -23,7 +23,10 @@ class QueryCadastroRepository implements CadastroGateway
             $userModel->name,
             $userModel->last_name,
             $userModel->email,
-            $userModel->password
+            $userModel->password,
+            $userModel->avatar,
+            $userModel->provider_name,
+            $userModel->provider_id,
         );
     }
 
@@ -39,14 +42,9 @@ class QueryCadastroRepository implements CadastroGateway
         return true;
     }
 
-    public function updateUser(UsuarioEntity $user): UsuarioEntity
+    public function getUser(string $mail): ?UsuarioEntity
     {
-        // TODO: Implement atualizar() method.
-    }
-
-    public function getUser(string $email): ?UsuarioEntity
-    {
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $mail)->first();
 
         if (!$user) {
             return null;
@@ -57,7 +55,10 @@ class QueryCadastroRepository implements CadastroGateway
             $user->name,
             $user->last_name,
             $user->email,
-            $user->password
+            $user->password,
+            $user->avatar,
+            $user->provider_name,
+            $user->provider_id,
         );
     }
 }

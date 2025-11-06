@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cfg_financeiro', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->decimal('salary', 10, 2);
-            $table->integer('limit_spend');
+            $table->decimal('salary', 10, 2)->nullable();
+            $table->integer('limit_spend')->nullable();
             $table->timestamps();
 
             $table->unique('user_id');

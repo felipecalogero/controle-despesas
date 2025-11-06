@@ -6,8 +6,8 @@ class FinanceiroEntity
 {
     public function __construct(
         public int $usuarioId,
-        public float $salario,
-        public int $limite
+        public ?float $salario,
+        public ?int $limite
     ) {}
 
     public function getId(): ?int
@@ -30,7 +30,7 @@ class FinanceiroEntity
         $this->usuarioId = $usuarioId;
     }
 
-    public function getSalario(): float
+    public function getSalario(): ?float
     {
         return $this->salario;
     }
@@ -40,7 +40,7 @@ class FinanceiroEntity
         $this->salario = $salario;
     }
 
-    public function getLimite(): int
+    public function getLimite(): ?int
     {
         return $this->limite;
     }

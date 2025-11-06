@@ -2,12 +2,14 @@
 <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 sidebar-gradient shadow-2xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+<aside id="sidebar"
+       class="fixed lg:static inset-y-0 left-0 z-50 w-64 sidebar-gradient shadow-2xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
     <div class="p-6 h-full flex flex-col">
         <!-- Logo e Botão Fechar -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center">
+                <div
+                    class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center">
                     <i data-lucide="wallet" class="w-6 h-6 text-white"></i>
                 </div>
                 <h1 class="text-xl font-bold text-white">ExpenseTracker</h1>
@@ -48,8 +50,11 @@
         <!-- User Profile -->
         <div class="mt-auto">
             <div class="flex items-center space-x-3 p-3 bg-white/10 rounded-xl">
-                <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                    <i data-lucide="user" class="w-5 h-5 text-white"></i>
+                <div
+                    class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                    {!! auth()->user()->avatar
+                        ? '<img src="' . auth()->user()->avatar . '" class="w-8 h-8 rounded-full object-cover" />'
+                        : '<i data-lucide="user" class="w-5 h-5 text-white"></i>' !!}
                 </div>
                 <div>
                     <p class="text-white font-medium text-sm">{{ auth()->user()->name }}</p>

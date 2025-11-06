@@ -39,8 +39,42 @@
                     </h3>
                 </div>
                 <div class="p-6">
-                    <form action="{{ route('configuracoes.atualizar-perfil') }}" method="POST">
+                    <form action="{{ route('configuracoes.atualizar-perfil') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+                        <!-- Avatar com preview e hover -->
+                        <div class="flex flex-col items-center mb-8">
+                            <div class="relative group">
+                                <img
+                                    src="{{ auth()->user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name ?? 'U') . '&background=random' }}"
+                                    alt="Avatar do Usuário"
+                                    class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg transition-all duration-300 group-hover:brightness-75"
+                                >
+
+                                <!-- Botões aparecem ao passar o mouse -->
+                                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div class="flex space-x-3">
+                                        <!-- Botão de editar -->
+                                        <label for="avatar-upload" class="cursor-pointer bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition">
+                                            <i data-lucide="camera" class="w-5 h-5 text-gray-700"></i>
+                                        </label>
+                                        <!-- Botão de remover -->
+                                        <button type="button" id="remove-avatar" class="bg-white/90 p-2 rounded-full shadow-md hover:bg-white transition">
+                                            <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Input oculto para upload -->
+                                <input type="file" id="avatar-upload" name="avatar" accept="image/*" class="hidden">
+                            </div>
+
+                            <p class="text-sm text-gray-500 mt-3 text-center">
+                                Clique na foto para alterar ou remover seu avatar
+                            </p>
+                        </div>
+
+                        <!-- Campos de texto -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label for="nome" class="block text-sm font-medium text-gray-700">
@@ -82,7 +116,7 @@
                         </div>
 
                         <div class="flex justify-end mt-6">
-                            <button type="submit"
+                            <button type="submit" id="btnSave"
                                     class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
                                 <i data-lucide="save" class="w-5 h-5"></i>
                                 <span>Salvar Alterações</span>
@@ -182,7 +216,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('configuracoes.alterar-senha') }}" method="POST">
+                    <form id="form-alterar-senha" action="{{ route('configuracoes.alterar-senha') }}" method="POST">
                         @csrf
 
                         @if(!$isOAuthUser)
@@ -256,7 +290,7 @@
                         </div>
 
                         <div class="flex justify-end mt-6">
-                            <button type="submit" id="btn-submit" disabled
+                            <button type="submit" id="btn-password" disabled
                                     class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-400 text-white font-medium rounded-xl cursor-not-allowed transition-all duration-200">
                                 <i data-lucide="key" class="w-5 h-5"></i>
                                 <span>

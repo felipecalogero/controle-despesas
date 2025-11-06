@@ -13,23 +13,27 @@ class AtualizarPerfilUseCase
     ) {}
 
     public function execute(AtualizarPerfilInput $input) {
+        $usuario = $this->usuarioGateway->getUser($input->email);
+
         $dadosPerfil = [
-            'usuarioId' => $input->usuarioId,
+            'usuarioId' => $usuario->id,
             'nome' => $input->nome,
             'sobrenome' => $input->sobrenome,
             'email' => $input->email,
             'telefone' => $input->telefone,
         ];
 
-        $usuario = $this->usuarioGateway->buscarUsuarioId($input->usuarioId);
-        $this->usuarioGateway->atualizarPerfil($dadosPerfil);
+        $this->usuarioGateway->updatePerfil($dadosPerfil);
 
         return new UsuarioEntity(
             $usuario->id,
             $usuario->name,
             $usuario->lastName,
             $usuario->email,
-            $usuario->password
+            $usuario->password,
+            $usuario->avatar,
+            $usuario->providerName,
+            $usuario->providerId
         );
     }
 }

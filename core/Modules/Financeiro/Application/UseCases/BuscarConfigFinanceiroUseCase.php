@@ -17,8 +17,8 @@ class BuscarConfigFinanceiroUseCase
         $configFinanceiro = $this->financeiroGateway->buscarConfigFinanceiro($usuarioId);
 
         return new FinanceiroOutput(
-            $configFinanceiro->salario,
-            $configFinanceiro->limite
+            $configFinanceiro?->salario,
+            $configFinanceiro?->limite
         );
     }
 }

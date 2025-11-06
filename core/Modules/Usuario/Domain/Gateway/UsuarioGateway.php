@@ -7,8 +7,9 @@ use Core\Modules\Usuario\Domain\Entities\UsuarioEntity;
 
 interface UsuarioGateway
 {
-    public function buscarUsuarioId(int $usuarioId): ?UsuarioEntity;
-    public function atualizarSenha(int $usuarioId, string $novaSenhaHash): bool;
-    public function atualizarPerfil(array $dadosPerfil): bool;
-    public function findOrCreateFromSocial(string $provider, object $socialUser);
+    public function saveUser(array $dataUser): UsuarioEntity;
+    public function getUser(string $email): ?UsuarioEntity;
+    public function updatePassword(int $usuarioId, string $novaSenhaHash): bool;
+    public function updatePerfil(array $dadosPerfil): bool;
+    public function findOrCreateFromSocial(string $provider, object $socialUser): UsuarioEntity;
 }

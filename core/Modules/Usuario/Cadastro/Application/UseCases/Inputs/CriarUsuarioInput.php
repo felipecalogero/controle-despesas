@@ -11,6 +11,6 @@ class CriarUsuarioInput
         public string $name,
         public string $lastName,
         public string $email,
-        public string $password
+        public string $password,
     ){}
 }

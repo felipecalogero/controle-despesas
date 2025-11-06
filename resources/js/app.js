@@ -700,12 +700,16 @@ function checkPasswordMatch() {
  * Valida o formulário completo
  */
 function validatePasswordForm() {
-    const novaSenha = document.getElementById('nova_senha');
-    const confirmarSenha = document.getElementById('confirmar_senha');
-    const submitBtn = document.getElementById('btn-submit'); // ✅ Mude para ID
+    // Seleciona o formulário de alteração de senha especificamente
+    const passwordForm = document.getElementById('form-alterar-senha');
+    if (!passwordForm) return;
+
+    const novaSenha = passwordForm.querySelector('#nova_senha');
+    const confirmarSenha = passwordForm.querySelector('#confirmar_senha');
+    const submitBtn = passwordForm.querySelector('#btn-password');
 
     if (!novaSenha || !confirmarSenha || !submitBtn) {
-        console.log('❌ Elementos não encontrados:', {
+        console.log('❌ Elementos não encontrados no formulário de senha:', {
             novaSenha: !!novaSenha,
             confirmarSenha: !!confirmarSenha,
             submitBtn: !!submitBtn
@@ -720,20 +724,28 @@ function validatePasswordForm() {
     if (isPasswordValid && isPasswordMatch) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-        submitBtn.classList.add('bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'hover:from-purple-600', 'hover:to-pink-600', 'shadow-lg', 'hover:shadow-xl', 'cursor-pointer');
+        submitBtn.classList.add(
+            'bg-gradient-to-r', 'from-purple-500', 'to-pink-500',
+            'hover:from-purple-600', 'hover:to-pink-600',
+            'shadow-lg', 'hover:shadow-xl', 'cursor-pointer'
+        );
     } else {
         submitBtn.disabled = true;
-        submitBtn.classList.remove('bg-gradient-to-r', 'from-purple-500', 'to-pink-500', 'hover:from-purple-600', 'hover:to-pink-600', 'shadow-lg', 'hover:shadow-xl', 'cursor-pointer');
+        submitBtn.classList.remove(
+            'bg-gradient-to-r', 'from-purple-500', 'to-pink-500',
+            'hover:from-purple-600', 'hover:to-pink-600',
+            'shadow-lg', 'hover:shadow-xl', 'cursor-pointer'
+        );
         submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
     }
 }
 
-/**
- * Inicializa a validação de senha para um formulário
- */
 function initializePasswordValidation() {
-    const novaSenha = document.getElementById('nova_senha');
-    const confirmarSenha = document.getElementById('confirmar_senha');
+    const passwordForm = document.querySelector('form[action*="alterar-senha"]');
+    if (!passwordForm) return;
+
+    const novaSenha = passwordForm.querySelector('#nova_senha');
+    const confirmarSenha = passwordForm.querySelector('#confirmar_senha');
 
     if (novaSenha) {
         novaSenha.addEventListener('input', function() {
@@ -752,6 +764,7 @@ function initializePasswordValidation() {
 
     validatePasswordForm();
 }
+
 
 // Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
